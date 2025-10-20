@@ -4,7 +4,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.View;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
@@ -23,8 +25,9 @@ public class LoginActivity extends AppCompatActivity {
     private EditText etPhoneLogin, etPasswordLogin;
     private MaterialButton btnLogin;
     private TextView tvGoToRegister;
+    private ProgressBar progressSpinner;
 
-    private ApiService apiService; // ✅ thêm dòng này
+    private ApiService apiService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,8 +39,9 @@ public class LoginActivity extends AppCompatActivity {
         etPasswordLogin = findViewById(R.id.etPasswordLogin);
         btnLogin = findViewById(R.id.btnLogin);
         tvGoToRegister = findViewById(R.id.tvGoToRegister);
+        progressSpinner = findViewById(R.id.progressSpinner);
 
-        // ✅ Khởi tạo Retrofit service
+        // Khởi tạo Retrofit service
         apiService = RetrofitClient.getApiService();
 
         // Xử lý đăng nhập
@@ -74,8 +78,13 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
-        // ✅ Nếu hợp lệ, gọi API
         loginUser(phone, password);
+    }
+
+    private void setLoadingState(boolean isLoading) {
+        btnLogin.setEnabled(!isLoading);
+        btnLogin.setAlpha(isLoading ? 0.6f : 1f);
+        progressSpinner.setVisibility(isLoading ? View.VISIBLE : View.GONE);
     }
 
     private void loginUser(String phone, String password) {
@@ -84,21 +93,22 @@ public class LoginActivity extends AppCompatActivity {
         user.setPassword(password);
 
         Log.d("LoginActivity", "Bắt đầu gọi API đăng nhập...");
+        setLoadingState(true); // ✅ disable + hiện spinner
 
         apiService.loginUser(user).enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
+                setLoadingState(false);
+
                 if (response.isSuccessful()) {
                     Log.d("LoginActivity", "Đăng nhập thành công: " + response.body());
                     Toast.makeText(LoginActivity.this, "Đăng nhập thành công!", Toast.LENGTH_SHORT).show();
 
-                    // ✅ Lưu trạng thái đăng nhập (nếu muốn)
                     getSharedPreferences("app_prefs", MODE_PRIVATE)
                             .edit()
                             .putBoolean("isLoggedIn", true)
                             .apply();
 
-                    // ✅ Chuyển sang MainActivity
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     startActivity(intent);
                     overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
@@ -111,6 +121,7 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<User> call, Throwable t) {
+                setLoadingState(false);
                 Log.e("LoginActivity", "Lỗi kết nối API: " + t.getMessage());
                 Toast.makeText(LoginActivity.this, "Không thể kết nối máy chủ: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }

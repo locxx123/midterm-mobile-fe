@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/itemHorizontal"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="8dp"
+    android:gravity="center">
+
+    <ImageView
+        android:id="@+id/imgFav"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:contentDescription="fav"
+        android:src="@drawable/ic_person"
+        android:background="@drawable/bg_circle_gray"
+        android:padding="12dp" />
+
+    <TextView
+        android:id="@+id/tvFavName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="A. Lộc"
+        android:textSize="14sp"
+        android:textColor="@color/black"
+        android:layout_marginTop="6dp" />
+</LinearLayout>

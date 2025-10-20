@@ -13,7 +13,7 @@
         android:padding="24dp"
         android:gravity="center">
 
-        <!-- Logo hoặc Icon -->
+        <!-- Logo -->
         <ImageView
             android:layout_width="120dp"
             android:layout_height="120dp"
@@ -47,10 +47,6 @@
             android:layout_marginBottom="16dp"
             app:boxStrokeColor="@color/primary"
             app:hintTextColor="@color/primary"
-            app:boxCornerRadiusTopStart="8dp"
-            app:boxCornerRadiusTopEnd="8dp"
-            app:boxCornerRadiusBottomStart="8dp"
-            app:boxCornerRadiusBottomEnd="8dp"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -62,7 +58,6 @@
                 android:maxLength="10"
                 android:drawableStart="@drawable/ic_phone"
                 android:drawablePadding="12dp" />
-
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Mật khẩu -->
@@ -71,11 +66,6 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             app:boxStrokeColor="@color/primary"
-            app:boxCornerRadiusTopStart="8dp"
-            app:boxCornerRadiusTopEnd="8dp"
-            app:boxCornerRadiusBottomStart="8dp"
-            app:boxCornerRadiusBottomEnd="8dp"
-            app:hintTextColor="@color/primary"
             app:passwordToggleEnabled="true"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
@@ -87,7 +77,6 @@
                 android:inputType="textPassword"
                 android:drawableStart="@drawable/ic_lock"
                 android:drawablePadding="12dp" />
-
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Quên mật khẩu -->
@@ -102,19 +91,54 @@
             android:padding="8dp"
             android:layout_marginBottom="24dp" />
 
-        <!-- Nút đăng nhập -->
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnLogin"
+        <!-- ✅ Nút đăng nhập có spinner -->
+        <FrameLayout
+            android:id="@+id/loginButtonContainer"
             android:layout_width="match_parent"
             android:layout_height="56dp"
-            android:text="Đăng Nhập"
-            android:textSize="16sp"
-            android:textStyle="bold"
+            android:layout_marginBottom="16dp">
 
-            android:textColor="@color/white"
-            app:cornerRadius="8dp"
-            android:layout_marginBottom="16dp"
-            app:backgroundTint="@color/primary" />
+            <!-- Nút chính -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnLogin"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:enabled="true"
+                android:alpha="1"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                app:cornerRadius="8dp"
+                app:backgroundTint="@color/primary" />
+
+            <!-- Overlay spinner + text -->
+            <LinearLayout
+                android:id="@+id/loginOverlay"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_gravity="center">
+
+                <ProgressBar
+                    android:id="@+id/progressSpinner"
+                    style="?android:attr/progressBarStyleSmall"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginEnd="8dp"
+                    android:indeterminateTint="@android:color/white"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/btnLoginText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Đăng Nhập"
+                    android:textColor="@android:color/white"
+                    android:textStyle="bold"
+                    android:textSize="16sp" />
+            </LinearLayout>
+        </FrameLayout>
 
         <!-- Hoặc -->
         <LinearLayout
@@ -143,7 +167,6 @@
                 android:layout_height="1dp"
                 android:layout_weight="1"
                 android:background="@color/gray_light" />
-
         </LinearLayout>
 
         <!-- Chuyển sang đăng ký -->
@@ -169,9 +192,7 @@
                 android:textSize="14sp"
                 android:textStyle="bold"
                 android:padding="8dp" />
-
         </LinearLayout>
 
     </LinearLayout>
-
 </ScrollView>
