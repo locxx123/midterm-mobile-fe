@@ -25,6 +25,8 @@ public class MainActivity extends AppCompatActivity {
                 selectedFragment = new HomeFragment();
             }else if(id == R.id.nav_contacts) {
                 selectedFragment = new ContactsFragment();
+            }else if(id == R.id.nav_profile) {
+                selectedFragment = new ProfileFragment();
             }
 
             if (selectedFragment != null) {
