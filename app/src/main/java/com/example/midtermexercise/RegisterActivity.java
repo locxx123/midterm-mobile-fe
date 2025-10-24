@@ -39,8 +39,8 @@ public class RegisterActivity extends AppCompatActivity {
         btnRegister = findViewById(R.id.btnRegister);
         tvGoToLogin = findViewById(R.id.tvGoToLogin);
 
-        // Khởi tạo API
-        apiService = RetrofitClient.getClient().create(ApiService.class);
+        // Khởi tạo API (sử dụng RetrofitClient có CookieManager)
+        apiService = RetrofitClient.getApiService(this);
 
         // Xử lý khi nhấn Đăng ký
         btnRegister.setOnClickListener(v -> validateRegister());

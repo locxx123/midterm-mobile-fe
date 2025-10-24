@@ -9,7 +9,14 @@
         android:id="@+id/nav_contacts"
         android:icon="@drawable/ic_contacts"
         android:title="Liên hệ" />
-
+    <item
+        android:id="@+id/nav_groups"
+        android:icon="@drawable/ic_group"
+        android:title="Nhóm" />
+    <item
+        android:id="@+id/nav_favorites"
+        android:icon="@drawable/ic_favorite"
+        android:title="Yêu thích" />
     <item
         android:id="@+id/nav_profile"
         android:icon="@drawable/ic_person"

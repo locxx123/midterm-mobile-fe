@@ -42,7 +42,7 @@ public class LoginActivity extends AppCompatActivity {
         progressSpinner = findViewById(R.id.progressSpinner);
 
         // Khởi tạo Retrofit service
-        apiService = RetrofitClient.getApiService();
+        apiService = RetrofitClient.getApiService(this);
 
         // Xử lý đăng nhập
         btnLogin.setOnClickListener(v -> validateLogin());
@@ -100,13 +100,16 @@ public class LoginActivity extends AppCompatActivity {
             public void onResponse(Call<User> call, Response<User> response) {
                 setLoadingState(false);
 
-                if (response.isSuccessful()) {
-                    Log.d("LoginActivity", "Đăng nhập thành công: " + response.body());
+                if (response.isSuccessful() && response.body() != null) {
+                    User loggedInUser = response.body();
+                    String token = loggedInUser.getToken();
+                    Log.d("LoginActivity", "Token nhận được: " + loggedInUser.getToken());
                     Toast.makeText(LoginActivity.this, "Đăng nhập thành công!", Toast.LENGTH_SHORT).show();
 
                     getSharedPreferences("app_prefs", MODE_PRIVATE)
                             .edit()
                             .putBoolean("isLoggedIn", true)
+                            .putString("token", token)
                             .apply();
 
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);

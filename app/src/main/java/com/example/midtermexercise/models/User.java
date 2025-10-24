@@ -4,6 +4,7 @@ public class User {
     private String fullName;
     private String phone;
     private String password;
+    private String token;
 
     public User() {}
 
@@ -35,5 +36,14 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    // ✅ Thêm phần này
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 }

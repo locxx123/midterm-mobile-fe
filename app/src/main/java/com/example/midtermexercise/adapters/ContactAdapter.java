@@ -14,9 +14,16 @@ import java.util.List;
 public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHolder> {
 
     private List<User> userList;
+    private OnItemClickListener listener;
 
-    public ContactAdapter(List<User> userList) {
+    // Interface callback
+    public interface OnItemClickListener {
+        void onItemClick(User user);
+    }
+
+    public ContactAdapter(List<User> userList, OnItemClickListener listener) {
         this.userList = userList;
+        this.listener = listener;
     }
 
     @NonNull
@@ -33,6 +40,11 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
         holder.tvName.setText(user.getFullName());
         holder.tvPhone.setText(user.getPhone());
         holder.imgMore.setImageResource(R.drawable.ic_more);
+
+        // Gán sự kiện click
+        holder.itemView.setOnClickListener(v -> {
+            if (listener != null) listener.onItemClick(user);
+        });
     }
 
     @Override

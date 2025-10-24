@@ -60,7 +60,20 @@ public class ContactsFragment extends Fragment {
 
         filteredList.addAll(userList); // ban đầu là toàn bộ danh sách
 
-        contactAdapter = new ContactAdapter(filteredList);
+        contactAdapter = new ContactAdapter(filteredList, user -> {
+            ContactDetailFragment detailFragment = new ContactDetailFragment();
+            Bundle args = new Bundle();
+            args.putString("name", user.getFullName());
+            args.putString("phone", user.getPhone());
+            detailFragment.setArguments(args);
+
+            requireActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment_container, detailFragment) // fragment_container là id trong activity_main.xml
+                    .addToBackStack(null)
+                    .commit();
+        });
+
         recyclerView.setAdapter(contactAdapter);
 
         updateContactCount();

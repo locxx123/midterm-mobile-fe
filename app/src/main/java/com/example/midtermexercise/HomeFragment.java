@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.midtermexercise.adapters.ContactAdapter;
 import com.example.midtermexercise.adapters.FavoriteAdapter;
 import com.example.midtermexercise.models.User;
-import com.example.midtermexercise.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,12 +40,25 @@ public class HomeFragment extends Fragment {
         userList.add(new User("Lê Thị D", "0933333333", "password"));
         userList.add(new User("Vũ Minh E", "0922222222", "mypassword"));
 
-        contactAdapter = new ContactAdapter(userList);
+        // ✅ Gắn callback click → chuyển sang ContactDetailFragment
+        contactAdapter = new ContactAdapter(userList, user -> {
+            ContactDetailFragment detailFragment = new ContactDetailFragment();
+            Bundle args = new Bundle();
+            args.putString("name", user.getFullName());
+            args.putString("phone", user.getPhone());
+            detailFragment.setArguments(args);
+
+            requireActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment_container, detailFragment)
+                    .addToBackStack(null)
+                    .commit();
+        });
+
         recyclerRecentContacts.setAdapter(contactAdapter);
 
-
         // --- RecyclerView YÊU THÍCH ---
-        recyclerFavorites = view.findViewById(R.id.rvFavorites); // ✅ đúng id
+        recyclerFavorites = view.findViewById(R.id.rvFavorites);
         recyclerFavorites.setLayoutManager(
                 new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false)
         );
