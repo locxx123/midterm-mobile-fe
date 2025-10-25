@@ -20,21 +20,20 @@ public class MainActivity extends AppCompatActivity {
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
 
         // Mặc định hiển thị trang chủ
-        loadFragment(new HomeFragment());
+        loadFragment(new ContactsFragment());
 
         // Xử lý chuyển giữa các tab
         bottomNavigationView.setOnItemSelectedListener(item -> {
             Fragment selectedFragment = null;
             int id = item.getItemId();
-
-            if (id == R.id.nav_home) {
-                selectedFragment = new HomeFragment();
-            } else if (id == R.id.nav_contacts) {
+            if (id == R.id.nav_contacts) {
                 selectedFragment = new ContactsFragment();
             } else if (id == R.id.nav_groups) {
                 selectedFragment = new GroupFragment();
             } else if (id == R.id.nav_profile) {
                 selectedFragment = new ProfileFragment();
+            }else if (id == R.id.nav_dialpad) {
+                selectedFragment = new DialpadFragment();
             }
 
             if (selectedFragment != null) {
@@ -52,8 +51,8 @@ public class MainActivity extends AppCompatActivity {
                     View item = menuView.getChildAt(i);
                     LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                             0,
-                            dpToPx(64), // chiều cao item
-                            1f // chia đều các tab
+                            dpToPx(64),
+                            1f
                     );
                     item.setLayoutParams(params);
                     item.setPadding(0, dpToPx(6), 0, dpToPx(6));

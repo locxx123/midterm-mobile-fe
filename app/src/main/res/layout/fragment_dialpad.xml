@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:padding="16dp">
+
+    <!-- Header -->
+    <LinearLayout
+        android:id="@+id/header_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingTop="40dp"
+        android:paddingBottom="60dp">
+
+        <TextView
+            android:id="@+id/tv_phone_number"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="037 8208856"
+            android:textColor="@color/black"
+            android:textSize="40sp"
+            android:gravity="center"
+            android:fontFamily="sans-serif-light" />
+
+        <ImageView
+            android:id="@+id/btn_add_contact"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_add_contact"
+            android:tint="@color/primary"
+            android:contentDescription="Add Contact"
+            android:layout_marginEnd="8dp" />
+    </LinearLayout>
+
+    <!-- Dialpad Grid -->
+    <GridLayout
+        android:id="@+id/dialpad_grid"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginTop="20dp"
+        android:columnCount="3"
+        android:rowCount="4">
+
+        <TextView
+            android:id="@+id/btn_1"
+            style="@style/DialpadButton"
+            android:text="1" />
+
+        <TextView
+            android:id="@+id/btn_2"
+            style="@style/DialpadButton"
+            android:text="2" />
+
+        <TextView
+            android:id="@+id/btn_3"
+            style="@style/DialpadButton"
+            android:text="3" />
+
+        <TextView
+            android:id="@+id/btn_4"
+            style="@style/DialpadButton"
+            android:text="4" />
+
+        <TextView
+            android:id="@+id/btn_5"
+            style="@style/DialpadButton"
+            android:text="5" />
+
+        <TextView
+            android:id="@+id/btn_6"
+            style="@style/DialpadButton"
+            android:text="6" />
+
+        <TextView
+            android:id="@+id/btn_7"
+            style="@style/DialpadButton"
+            android:text="7" />
+
+        <TextView
+            android:id="@+id/btn_8"
+            style="@style/DialpadButton"
+            android:text="8" />
+
+        <TextView
+            android:id="@+id/btn_9"
+            style="@style/DialpadButton"
+            android:text="9" />
+
+        <TextView
+            android:id="@+id/btn_star"
+            style="@style/DialpadButton"
+            android:text="*" />
+
+        <TextView
+            android:id="@+id/btn_0"
+            style="@style/DialpadButton"
+            android:text="0" />
+
+        <TextView
+            android:id="@+id/btn_hash"
+            style="@style/DialpadButton"
+            android:text="#" />
+    </GridLayout>
+
+    <!-- Action Buttons -->
+    <RelativeLayout
+        android:id="@+id/action_buttons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/dialpad_grid"
+        android:layout_marginTop="40dp"
+        android:gravity="center_horizontal">
+
+        <!-- Nút gọi ở giữa -->
+        <ImageView
+            android:id="@+id/btn_call"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/bg_call_button"
+            android:contentDescription="Call"
+            android:padding="18dp"
+            android:src="@drawable/ic_call"
+            android:tint="@color/white"
+            android:scaleType="centerInside"
+            android:clickable="true"
+            android:focusable="true" />
+
+        <!-- Nút xóa nằm bên phải, gần nút gọi -->
+        <ImageView
+            android:id="@+id/btn_backspace"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_toRightOf="@id/btn_call"
+            android:layout_marginStart="32dp"
+            android:layout_alignBottom="@id/btn_call"
+            android:background="@drawable/bg_backspace_button"
+            android:contentDescription="Backspace"
+            android:padding="12dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_backspace"
+            android:tint="@color/dark_gray"
+            android:clickable="true"
+            android:focusable="true" />
+    </RelativeLayout>
+
+</RelativeLayout>

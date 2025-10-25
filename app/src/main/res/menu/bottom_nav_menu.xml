@@ -1,11 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/nav_home"
-        android:icon="@drawable/ic_home"
-        android:title="Trang chủ" />
-
-    <item
         android:id="@+id/nav_contacts"
         android:icon="@drawable/ic_contacts"
         android:title="Liên hệ" />
@@ -13,6 +8,10 @@
         android:id="@+id/nav_groups"
         android:icon="@drawable/ic_group"
         android:title="Nhóm" />
+    <item
+        android:id="@+id/nav_dialpad"
+        android:icon="@drawable/ic_dialpad"
+        android:title="Bàn phím" />
     <item
         android:id="@+id/nav_favorites"
         android:icon="@drawable/ic_favorite"

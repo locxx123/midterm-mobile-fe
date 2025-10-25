@@ -11,13 +11,16 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.midtermexercise.adapters.ContactAdapter;
 import com.example.midtermexercise.models.User;
+import com.example.midtermexercise.viewmodel.ContactsViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +38,8 @@ public class ContactsFragment extends Fragment {
     private LinearLayout llEmptyState;
     private ProgressBar progressBar;
 
+    private ContactsViewModel viewModel;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -51,15 +56,7 @@ public class ContactsFragment extends Fragment {
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        // Dummy data
-        userList.add(new User("Nguyễn Văn A", "0912345678", "123456"));
-        userList.add(new User("Trần Thị B", "0987654321", "abcdef"));
-        userList.add(new User("Phạm Văn C", "0909090909", "654321"));
-        userList.add(new User("Lê Thị D", "0933333333", "password"));
-        userList.add(new User("Vũ Minh E", "0922222222", "mypassword"));
-
-        filteredList.addAll(userList); // ban đầu là toàn bộ danh sách
-
+        // Adapter
         contactAdapter = new ContactAdapter(filteredList, user -> {
             ContactDetailFragment detailFragment = new ContactDetailFragment();
             Bundle args = new Bundle();
@@ -69,15 +66,38 @@ public class ContactsFragment extends Fragment {
 
             requireActivity().getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.fragment_container, detailFragment) // fragment_container là id trong activity_main.xml
+                    .replace(R.id.fragment_container, detailFragment)
                     .addToBackStack(null)
                     .commit();
         });
-
         recyclerView.setAdapter(contactAdapter);
 
-        updateContactCount();
-        checkEmptyState();
+        // ViewModel
+        viewModel = new ViewModelProvider(this).get(ContactsViewModel.class);
+
+        // Chỉ hiện spinner nếu dữ liệu chưa có
+        if (viewModel.getContacts().getValue() == null || viewModel.getContacts().getValue().isEmpty()) {
+            progressBar.setVisibility(View.VISIBLE);
+        }
+
+        // Quan sát LiveData
+        viewModel.getContacts().observe(getViewLifecycleOwner(), list -> {
+            progressBar.setVisibility(View.GONE);
+            if (list != null) {
+                userList.clear();
+                userList.addAll(list);
+                filteredList.clear();
+                filteredList.addAll(list);
+                contactAdapter.notifyDataSetChanged();
+                updateContactCount();
+                checkEmptyState();
+            } else {
+                Toast.makeText(getContext(), "Không thể tải danh bạ", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        // Chỉ load API 1 lần
+        viewModel.loadContacts(getContext());
 
         // Tìm kiếm
         etSearch.addTextChangedListener(new TextWatcher() {

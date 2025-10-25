@@ -6,4 +6,5 @@
     <color name="primary">#0092ff</color>
     <color name="gray_light">#D3D3D3</color>
     <color name="dark_gray">#555555</color>
+    <color name="call_green">#4CAF50</color>
 </resources>
