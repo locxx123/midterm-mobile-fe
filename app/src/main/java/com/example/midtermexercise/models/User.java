@@ -11,13 +11,13 @@ public class User {
 
     public User() {}
 
-    public User(String fullName, String phone, String _id) {
+    // Dùng khi tạo user mới để đăng ký
+    public User(String fullName, String phone, String password) {
         this.fullName = fullName;
         this.phone = phone;
-        this._id = _id;
+        this.password = password;
     }
 
-    // Getter & Setter
     public String getId() { return _id; }
     public void setId(String _id) { this._id = _id; }
 

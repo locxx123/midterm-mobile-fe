@@ -13,6 +13,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.midtermexercise.api.RetrofitClient;
 import com.example.midtermexercise.api.ApiService;
 import com.example.midtermexercise.models.User;
+import com.google.gson.Gson;
+
 import android.util.Log;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -106,16 +108,22 @@ public class RegisterActivity extends AppCompatActivity {
         call.enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
+                Log.d("RegisterActivity", "Status code: " + response.code());
+                try {
+                    Log.d("RegisterActivity", "Response body: " + new Gson().toJson(response.body()));
+                    Log.d("RegisterActivity", "Error body: " + response.errorBody().string());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
                 if (response.isSuccessful()) {
                     Toast.makeText(RegisterActivity.this, "Đăng ký thành công!", Toast.LENGTH_SHORT).show();
-
-                    // Chuyển sang Login
                     Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
                     startActivity(intent);
                     overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                     finish();
                 } else {
-                    Toast.makeText(RegisterActivity.this, "Số điện thoại đã tồn tại!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(RegisterActivity.this, "Có lỗi xảy ra, vui lòng thử lại!", Toast.LENGTH_SHORT).show();
                 }
             }
 
