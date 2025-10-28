@@ -1,34 +1,168 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/llFavoritesContainer"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp"
-    android:background="@color/white">
+    android:background="@color/white"
+    tools:context=".FavoritesFragment">
 
-    <TextView
-        android:id="@+id/tvTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Yêu thích"
-        android:textStyle="bold"
-        android:textSize="20sp"
-        android:textColor="@color/black"
-        android:layout_marginBottom="12dp" />
-
-    <TextView
-        android:id="@+id/tvEmptyFavorites"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Chưa có liên hệ yêu thích"
-        android:textColor="@color/black"
-        android:visibility="gone"
-        android:layout_marginTop="12dp" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvFavorites"
+    <!-- Header giống trang Liên hệ -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardFavoritesHeader"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minHeight="96dp"
-        android:overScrollMode="never" />
+        app:cardCornerRadius="0dp"
+        app:cardElevation="4dp"
+        app:cardBackgroundColor="@color/primary">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingTop="30dp"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:id="@+id/tvFavoritesTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Yêu thích"
+                    android:textSize="24sp"
+                    android:textColor="@android:color/white"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <!-- Thanh tìm kiếm -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardSearchFav"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                app:cardCornerRadius="25dp"
+                app:cardElevation="0dp"
+                app:cardBackgroundColor="@android:color/white">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:padding="4dp">
+
+                    <ImageView
+                        android:id="@+id/imgSearchIconFav"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:src="@drawable/ic_search"
+                        android:padding="6dp"
+                        android:contentDescription="Tìm kiếm" />
+
+                    <EditText
+                        android:id="@+id/etSearchFav"
+                        android:layout_width="0dp"
+                        android:layout_height="40dp"
+                        android:layout_weight="1"
+                        android:background="@android:color/transparent"
+                        android:hint="Tìm kiếm yêu thích..."
+                        android:textSize="15sp"
+                        android:textColor="@color/black"
+                        android:textColorHint="@color/gray"
+                        android:inputType="text"
+                        android:maxLines="1" />
+
+                    <ImageButton
+                        android:id="@+id/btnClearSearchFav"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:src="@drawable/ic_close"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:visibility="gone"
+                        android:contentDescription="Xóa tìm kiếm" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <!-- Bộ đếm -->
+    <LinearLayout
+        android:id="@+id/llFavFilterSort"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="12dp"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/tvFavoriteCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0 mục yêu thích"
+            android:textSize="14sp"
+            android:textColor="@color/gray" />
+    </LinearLayout>
+
+    <!-- Danh sách + empty + loading -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvFavorites"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:paddingBottom="8dp"
+            android:scrollbars="vertical"
+            tools:listitem="@layout/item_favorite_vertical" />
+
+        <!-- Empty state -->
+        <LinearLayout
+            android:id="@+id/llEmptyFavorites"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:padding="32dp"
+            android:visibility="gone">
+
+            <ImageView
+                android:id="@+id/imgEmptyFav"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:src="@drawable/ic_person"
+                android:alpha="0.5"
+                android:contentDescription="Không có yêu thích" />
+
+            <TextView
+                android:id="@+id/tvEmptyFavTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Chưa có liên hệ yêu thích"
+                android:textSize="18sp"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:layout_marginTop="16dp" />
+        </LinearLayout>
+
+        <!-- Loading -->
+        <ProgressBar
+            android:id="@+id/progressBarFav"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone" />
+    </FrameLayout>
 </LinearLayout>
