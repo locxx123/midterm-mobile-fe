@@ -42,7 +42,7 @@ public class RegisterActivity extends AppCompatActivity {
         tvGoToLogin = findViewById(R.id.tvGoToLogin);
 
         // Khởi tạo API (sử dụng RetrofitClient có CookieManager)
-        apiService = RetrofitClient.getApiService(this);
+        apiService = (ApiService) RetrofitClient.getApiService(this);
 
         // Xử lý khi nhấn Đăng ký
         btnRegister.setOnClickListener(v -> validateRegister());

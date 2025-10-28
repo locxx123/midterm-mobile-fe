@@ -1,17 +1,32 @@
 package com.example.midtermexercise;
 
+import android.app.AlertDialog;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.example.midtermexercise.api.ApiService;
+import com.example.midtermexercise.api.RetrofitClient;
+import com.example.midtermexercise.models.User;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -21,6 +36,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.midtermexercise.adapters.ContactAdapter;
 import com.example.midtermexercise.models.User;
 import com.example.midtermexercise.viewmodel.ContactsViewModel;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,6 +63,8 @@ public class ContactsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_contact, container, false);
 
         // Ánh xạ view
+        ImageButton btnAddContact = view.findViewById(R.id.btnAddContact);
+
         recyclerView = view.findViewById(R.id.rvContacts);
         etSearch = view.findViewById(R.id.etSearch);
         btnClearSearch = view.findViewById(R.id.btnClearSearch);
@@ -72,15 +90,12 @@ public class ContactsFragment extends Fragment {
         });
         recyclerView.setAdapter(contactAdapter);
 
-        // ViewModel
         viewModel = new ViewModelProvider(this).get(ContactsViewModel.class);
 
-        // Chỉ hiện spinner nếu dữ liệu chưa có
         if (viewModel.getContacts().getValue() == null || viewModel.getContacts().getValue().isEmpty()) {
             progressBar.setVisibility(View.VISIBLE);
         }
 
-        // Quan sát LiveData
         viewModel.getContacts().observe(getViewLifecycleOwner(), list -> {
             progressBar.setVisibility(View.GONE);
             if (list != null) {
@@ -96,10 +111,8 @@ public class ContactsFragment extends Fragment {
             }
         });
 
-        // Chỉ load API 1 lần
         viewModel.loadContacts(getContext());
 
-        // Tìm kiếm
         etSearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
@@ -117,6 +130,8 @@ public class ContactsFragment extends Fragment {
             etSearch.setText("");
             btnClearSearch.setVisibility(View.GONE);
         });
+        btnAddContact.setOnClickListener(v -> showAddContactDialog());
+
 
         return view;
     }
@@ -154,4 +169,92 @@ public class ContactsFragment extends Fragment {
             recyclerView.setVisibility(View.VISIBLE);
         }
     }
+    private void showAddContactDialog() {
+        View dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_add_contact, null);
+        AlertDialog dialog = new AlertDialog.Builder(requireContext())
+                .setView(dialogView)
+                .setCancelable(false)
+                .create();
+
+        EditText etName = dialogView.findViewById(R.id.etName);
+        EditText etPhone = dialogView.findViewById(R.id.etPhone);
+        EditText etEmail = dialogView.findViewById(R.id.etEmail);
+        Button btnAdd = dialogView.findViewById(R.id.btnAdd);
+        Button btnCancel = dialogView.findViewById(R.id.btnCancel);
+
+        btnCancel.setOnClickListener(v -> dialog.dismiss());
+
+        btnAdd.setOnClickListener(v -> {
+            String name = etName.getText().toString().trim();
+            String phone = etPhone.getText().toString().trim();
+            String email = etEmail.getText().toString().trim();
+
+            if (name.isEmpty() || phone.isEmpty()) {
+                Toast.makeText(requireContext(), "Vui lòng nhập đầy đủ tên và số điện thoại", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            progressBar.setVisibility(View.VISIBLE);
+
+            ApiService api = (ApiService) RetrofitClient.getApiService(requireContext());
+
+            Map<String, String> body = new HashMap<>();
+            body.put("fullName", name);
+            body.put("phone", phone);
+            body.put("photo", ""); // optional
+
+            api.addContact(body).enqueue(new retrofit2.Callback<User>() {
+                @Override
+                public void onResponse(Call<User> call, retrofit2.Response<User> response) {
+                    progressBar.setVisibility(View.GONE);
+
+                    Log.d("API_RESPONSE", "Code: " + response.code());
+                    Log.d("API_RESPONSE", "Message: " + response.message());
+                    Log.d("API_RESPONSE", "Raw: " + response.raw().toString());
+
+                    if (response.isSuccessful() && response.body() != null) {
+                        User newUser = response.body();
+                        Log.d("API_RESPONSE", "Body: " + new Gson().toJson(newUser));
+
+                        // Thêm liên hệ mới vào danh sách hiển thị
+                        userList.add(newUser);
+                        filteredList.add(newUser);
+                        contactAdapter.notifyItemInserted(filteredList.size() - 1);
+                        updateContactCount();
+                        checkEmptyState();
+
+                        Toast.makeText(requireContext(), "Đã thêm liên hệ: " + name, Toast.LENGTH_SHORT).show();
+                        dialog.dismiss();
+                    } else {
+                        try {
+                            String errorBody = response.errorBody() != null ? response.errorBody().string() : "null";
+                            Log.e("API_ERROR", "Error body: " + errorBody);
+                            Toast.makeText(requireContext(),
+                                    "Thêm thất bại (" + response.code() + "): " + errorBody,
+                                    Toast.LENGTH_LONG).show();
+                        } catch (Exception e) {
+                            Log.e("API_ERROR", "Exception while reading error body", e);
+                            Toast.makeText(requireContext(),
+                                    "Thêm thất bại (" + response.code() + ")", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }
+
+
+                @Override
+                public void onFailure(Call<User> call, Throwable t) {
+                    progressBar.setVisibility(View.GONE);
+                    Toast.makeText(requireContext(),
+                            "Lỗi kết nối server: " + t.getMessage(),
+                            Toast.LENGTH_SHORT).show();
+                }
+            });
+        });
+
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        }
+        dialog.show();
+    }
+
 }

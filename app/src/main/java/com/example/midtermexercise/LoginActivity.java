@@ -42,7 +42,7 @@ public class LoginActivity extends AppCompatActivity {
         progressSpinner = findViewById(R.id.progressSpinner);
 
         // Khởi tạo Retrofit service
-        apiService = RetrofitClient.getApiService(this);
+        apiService = (ApiService) RetrofitClient.getApiService(this);
 
         // Xử lý đăng nhập
         btnLogin.setOnClickListener(v -> validateLogin());
