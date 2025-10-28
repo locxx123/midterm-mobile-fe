@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="@color/white">
+
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Yêu thích"
+        android:textStyle="bold"
+        android:textSize="20sp"
+        android:textColor="@color/black"
+        android:layout_marginBottom="12dp" />
+
+    <TextView
+        android:id="@+id/tvEmptyFavorites"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Chưa có liên hệ yêu thích"
+        android:textColor="@color/black"
+        android:visibility="gone"
+        android:layout_marginTop="12dp" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvFavorites"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="96dp"
+        android:overScrollMode="never" />
+</LinearLayout>

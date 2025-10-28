@@ -30,10 +30,12 @@ public class MainActivity extends AppCompatActivity {
                 selectedFragment = new ContactsFragment();
             } else if (id == R.id.nav_groups) {
                 selectedFragment = new GroupFragment();
+            } else if (id == R.id.nav_dialpad) {
+                selectedFragment = new DialpadFragment();
+            } else if (id == R.id.nav_favorites) {
+                selectedFragment = new FavoritesFragment();
             } else if (id == R.id.nav_profile) {
                 selectedFragment = new ProfileFragment();
-            }else if (id == R.id.nav_dialpad) {
-                selectedFragment = new DialpadFragment();
             }
 
             if (selectedFragment != null) {
