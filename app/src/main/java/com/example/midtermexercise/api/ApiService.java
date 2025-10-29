@@ -5,6 +5,7 @@ import com.example.midtermexercise.models.FavoritesResponse;
 import com.example.midtermexercise.models.ContactResponse;
 
 import java.util.List;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -32,4 +33,7 @@ public interface ApiService {
 
     @DELETE("phone/{id}/favorite")
     Call<ContactResponse> removeFavorite(@Path("id") String id);
+
+    @POST("phone/add")
+    Call<User> addContact(@Body Map<String, String> body);
 }
