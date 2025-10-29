@@ -62,6 +62,8 @@ public class ContactsFragment extends Fragment {
             Bundle args = new Bundle();
             args.putString("name", user.getFullName());
             args.putString("phone", user.getPhone());
+            args.putString("id", user.getId());
+            args.putBoolean("favorite", user.isFavorite());
             detailFragment.setArguments(args);
 
             requireActivity().getSupportFragmentManager()
