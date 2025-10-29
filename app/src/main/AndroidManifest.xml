@@ -10,7 +10,8 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.MidtermExercise">
+        android:theme="@style/Theme.MidtermExercise"
+        android:usesCleartextTraffic="true">
 
         <!-- Mặc định khởi động app vào LoginActivity -->
         <activity

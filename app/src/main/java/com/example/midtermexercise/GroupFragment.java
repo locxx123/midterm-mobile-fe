@@ -3,6 +3,7 @@ package com.example.midtermexercise;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,17 +12,26 @@ import android.widget.ExpandableListView;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import androidx.appcompat.app.AlertDialog;
+
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.midtermexercise.adapters.GroupExpandableAdapter;
+import com.example.midtermexercise.api.ApiClient;
+import com.example.midtermexercise.api.ApiService;
 import com.example.midtermexercise.models.Group;
+import com.example.midtermexercise.models.GroupRequest;
+import com.example.midtermexercise.models.GroupResponse;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import retrofit2.Call;
 
 public class GroupFragment extends Fragment {
 
@@ -34,13 +44,13 @@ public class GroupFragment extends Fragment {
     private ImageButton btnClearSearchGroup;
     private TextView tvGroupCount;
     private LinearLayout llEmptyGroupState;
+    private FloatingActionButton fabAddGroup;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        // Inflate layout
         View view = inflater.inflate(R.layout.fragment_group, container, false);
 
         // Ánh xạ view
@@ -49,17 +59,16 @@ public class GroupFragment extends Fragment {
         btnClearSearchGroup = view.findViewById(R.id.btnClearSearchGroup);
         tvGroupCount = view.findViewById(R.id.tvGroupCount);
         llEmptyGroupState = view.findViewById(R.id.llEmptyGroupState);
+        fabAddGroup = view.findViewById(R.id.fabAddGroup);
 
-        // Dữ liệu mẫu
-        setupDummyData();
-        updateGroupCount();
-        checkEmptyState();
-
-        // Adapter
+        // ✅ Khởi tạo adapter trước khi fetch dữ liệu
         adapter = new GroupExpandableAdapter(requireContext(), groupList, memberMap);
         expandableListView.setAdapter(adapter);
 
-        // Sự kiện click
+        // ✅ Sau đó mới gọi API
+        fetchGroupsFromApi();
+
+        // Sự kiện click nhóm và thành viên
         expandableListView.setOnGroupClickListener((parent, v, groupPosition, id) -> false);
         expandableListView.setOnChildClickListener((parent, v, groupPosition, childPosition, id) -> {
             String memberName = memberMap.get(groupList.get(groupPosition)).get(childPosition);
@@ -67,7 +76,7 @@ public class GroupFragment extends Fragment {
             return true;
         });
 
-        // Tìm kiếm nhóm
+        // 🔍 Tìm kiếm nhóm
         etSearchGroup.addTextChangedListener(new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
             @Override public void afterTextChanged(Editable s) {}
@@ -83,30 +92,93 @@ public class GroupFragment extends Fragment {
             btnClearSearchGroup.setVisibility(View.GONE);
         });
 
+        fabAddGroup.setOnClickListener(v -> showCreateGroupDialog());
+
         return view;
     }
 
-    private void setupDummyData() {
-        groupList.clear();
-        memberMap.clear();
+    private void showCreateGroupDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        LayoutInflater inflater = requireActivity().getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.dialog_create_group, null);
+        final EditText etGroupName = dialogView.findViewById(R.id.etGroupName);
 
-        Group g1 = new Group("Gia đình", "5 thành viên");
-        Group g2 = new Group("Bạn bè", "12 thành viên");
-        Group g3 = new Group("Đồng nghiệp", "8 thành viên");
+        builder.setView(dialogView)
+                .setTitle("Tạo nhóm mới")
+                .setPositiveButton("Tạo", (dialog, id) -> {
+                    String groupName = etGroupName.getText().toString().trim();
+                    if (!groupName.isEmpty()) {
+                        createGroupToApi(groupName, null); // photoUrl is null for now
+                    }
+                })
+                .setNegativeButton("Hủy", (dialog, id) -> dialog.cancel());
 
-        groupList.add(g1);
-        groupList.add(g2);
-        groupList.add(g3);
-
-        List<String> members1 = List.of("Ba", "Mẹ", "Anh", "Em", "Tôi");
-        List<String> members2 = List.of("Nam", "Hà", "Tú", "Vy", "Duy", "Lan", "Khoa");
-        List<String> members3 = List.of("Hùng", "Trang", "Tâm", "Khánh");
-
-        memberMap.put(g1, new ArrayList<>(members1));
-        memberMap.put(g2, new ArrayList<>(members2));
-        memberMap.put(g3, new ArrayList<>(members3));
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
+    /**
+     * ✅ Gọi API để lấy danh sách nhóm
+     */
+    private void fetchGroupsFromApi() {
+        String token = requireContext()
+                .getSharedPreferences("app_prefs", requireContext().MODE_PRIVATE)
+                .getString("token", null);
+
+        if (token == null || token.isEmpty()) {
+            Log.e("API", "❌ Không tìm thấy token, vui lòng đăng nhập lại");
+            return;
+        }
+
+        Log.d("API", "🔑 Token gửi đi: Bearer " + token);
+
+        ApiService apiService = ApiClient.getClient().create(ApiService.class);
+        Call<GroupResponse> call = apiService.getGroups("Bearer " + token);
+
+        call.enqueue(new retrofit2.Callback<GroupResponse>() {
+            @Override
+            public void onResponse(Call<GroupResponse> call, retrofit2.Response<GroupResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    groupList.clear();
+                    memberMap.clear();
+
+                    List<GroupResponse.GroupItem> apiGroups = response.body().groups;
+                    for (GroupResponse.GroupItem apiGroup : apiGroups) {
+                        Group g = new Group(apiGroup.name, apiGroup.photo);
+                        groupList.add(g);
+
+                        List<String> members = new ArrayList<>();
+                        if (apiGroup.contacts != null) {
+                            for (GroupResponse.ContactItem c : apiGroup.contacts) {
+                                members.add(c.fullName);
+                            }
+                        }
+                        memberMap.put(g, members);
+                    }
+
+                    // ✅ Cập nhật UI an toàn trên thread chính
+                    requireActivity().runOnUiThread(() -> {
+                        adapter.notifyDataSetChanged();
+                        updateGroupCount();
+                        checkEmptyState();
+                    });
+
+                    Log.d("API", "✅ Lấy danh sách nhóm thành công: " + groupList.size() + " nhóm");
+                } else {
+                    Log.e("API", "❌ Lỗi khi nhận response: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GroupResponse> call, Throwable t) {
+                Log.e("API", "❌ Lỗi kết nối API: " + t.getMessage());
+            }
+        });
+    }
+
+    /**
+     * 🔍 Lọc nhóm theo từ khóa
+     */
     private void filterGroups(String query) {
         List<Group> filteredGroups = new ArrayList<>();
         HashMap<Group, List<String>> filteredMap = new HashMap<>();
@@ -130,6 +202,43 @@ public class GroupFragment extends Fragment {
         llEmptyGroupState.setVisibility(filteredGroups.isEmpty() ? View.VISIBLE : View.GONE);
     }
 
+    /**
+     * ✅ Gọi API để tạo nhóm mới
+     */
+    private void createGroupToApi(String groupName, @Nullable String photoUrl) {
+        String token = requireContext()
+                .getSharedPreferences("app_prefs", requireContext().MODE_PRIVATE)
+                .getString("token", null);
+
+        if (token == null || token.isEmpty()) {
+            Log.e("API", "❌ Không tìm thấy token, vui lòng đăng nhập lại");
+            return;
+        }
+
+        ApiService apiService = ApiClient.getClient().create(ApiService.class);
+        GroupRequest request = new GroupRequest(groupName, photoUrl);
+
+        Call<GroupResponse.SingleGroup> call = apiService.createGroup("Bearer " + token, request);
+
+        call.enqueue(new retrofit2.Callback<GroupResponse.SingleGroup>() {
+            @Override
+            public void onResponse(Call<GroupResponse.SingleGroup> call,
+                                   retrofit2.Response<GroupResponse.SingleGroup> response) {
+                if (response.isSuccessful() && response.body() != null && response.body().group != null) {
+                    Log.d("API", "✅ Tạo nhóm thành công: " + response.body().group.name);
+                    fetchGroupsFromApi(); // Refresh the list
+                } else {
+                    Log.e("API", "❌ Lỗi khi tạo nhóm: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GroupResponse.SingleGroup> call, Throwable t) {
+                Log.e("API", "❌ Lỗi kết nối khi tạo nhóm: " + t.getMessage());
+            }
+        });
+    }
+
     private void updateGroupCount() {
         tvGroupCount.setText(groupList.size() + " nhóm");
     }
@@ -137,4 +246,5 @@ public class GroupFragment extends Fragment {
     private void checkEmptyState() {
         llEmptyGroupState.setVisibility(groupList.isEmpty() ? View.VISIBLE : View.GONE);
     }
+
 }
