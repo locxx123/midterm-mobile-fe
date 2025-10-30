@@ -46,12 +46,12 @@
 
         <!-- Nhắn tin -->
         <LinearLayout
+            android:id="@+id/btnMessage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:gravity="center"
-            android:layout_marginHorizontal="20dp"
-            android:onClick="onMessageClick">
+            android:layout_marginHorizontal="20dp">
 
             <ImageView
                 android:layout_width="56dp"
@@ -73,12 +73,12 @@
 
         <!-- Gọi -->
         <LinearLayout
+            android:id="@+id/btnCall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:gravity="center"
-            android:layout_marginHorizontal="20dp"
-            android:onClick="onCallClick">
+            android:layout_marginHorizontal="20dp">
 
             <ImageView
                 android:layout_width="56dp"
@@ -100,12 +100,12 @@
 
         <!-- Thêm vào nhóm -->
         <LinearLayout
+            android:id="@+id/btnAddToGroup"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:gravity="center"
-            android:layout_marginHorizontal="20dp"
-            android:onClick="onAddGroupClick">
+            android:layout_marginHorizontal="20dp">
 
             <ImageView
                 android:layout_width="56dp"
@@ -117,6 +117,7 @@
                 android:src="@drawable/ic_group_add" />
 
             <TextView
+                android:id="@+id/tvAddGroupLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="thêm nhóm"
@@ -192,13 +193,13 @@
         android:orientation="vertical">
 
         <TextView
+            android:id="@+id/tvSendMessage"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Gửi tin nhắn"
             android:textColor="#0092FF"
             android:textSize="16sp"
-            android:paddingVertical="12dp"
-            android:onClick="onMessageClick" />
+            android:paddingVertical="12dp" />
 
         <View
             android:layout_width="match_parent"
