@@ -28,7 +28,7 @@
                 android:padding="16dp">
 
                 <!-- Title -->
-                <LinearLayout
+                                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
@@ -44,6 +44,15 @@
                         android:textSize="24sp"
                         android:textColor="@android:color/white"
                         android:textStyle="bold" />
+
+                    <ImageButton
+                        android:id="@+id/btnAddGroup"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:src="@drawable/ic_add"
+                        android:background="@drawable/bg_circle_white"
+                        android:padding="8dp"
+                        android:contentDescription="Thêm nhóm" />
                 </LinearLayout>
 
                 <!-- Ô tìm kiếm nhóm -->
@@ -171,7 +180,7 @@
         android:indeterminate="true"
         android:visibility="gone" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
+    <!-- <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabAddGroup"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -181,5 +190,5 @@
         android:src="@drawable/ic_add"
         app:backgroundTint="@color/primary"
         app:tint="@android:color/white"
-        android:contentDescription="Thêm nhóm" />
+        android:contentDescription="Thêm nhóm" /> -->
 </RelativeLayout>
