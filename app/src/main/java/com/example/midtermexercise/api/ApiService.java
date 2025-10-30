@@ -26,13 +26,10 @@ public interface ApiService {
     Call<List<User>> getContacts();
 
     @GET("phone/groups")
-    Call<GroupResponse> getGroups(@Header("Authorization") String token);
-
+    Call<GroupResponse> getGroups();
 
     @POST("phone/groups")
-    Call<GroupResponse.SingleGroup> createGroup(
-            @Header("Authorization") String token,
-            @Body GroupRequest group
-    );
+    Call<GroupResponse.SingleGroup> createGroup(@Body GroupRequest group);
+
 
 }
