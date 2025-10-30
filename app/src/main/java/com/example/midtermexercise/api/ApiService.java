@@ -1,5 +1,7 @@
 package com.example.midtermexercise.api;
 
+import com.example.midtermexercise.models.GroupRequest;
+import com.example.midtermexercise.models.GroupResponse;
 import com.example.midtermexercise.models.User;
 import com.example.midtermexercise.models.FavoritesResponse;
 import com.example.midtermexercise.models.ContactResponse;
@@ -36,4 +38,12 @@ public interface ApiService {
 
     @POST("phone/add")
     Call<User> addContact(@Body Map<String, String> body);
+
+    @GET("phone/groups")
+    Call<GroupResponse> getGroups();
+
+
+    @POST("phone/groups")
+    Call<GroupResponse.SingleGroup> createGroup(@Body GroupRequest request);
+
 }

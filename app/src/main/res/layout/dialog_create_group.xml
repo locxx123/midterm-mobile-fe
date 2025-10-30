@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:background="@drawable/bg_dialog_round">
+
+    <!-- Tiêu đề -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Thêm nhóm mới"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="@color/primary"
+        android:gravity="center"
+        android:layout_marginBottom="20dp" />
+
+    <!-- Ô nhập tên nhóm -->
+    <EditText
+        android:id="@+id/etGroupName"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:hint="Tên nhóm"
+        android:inputType="textCapWords"
+        android:background="@drawable/bg_input_border"
+        android:paddingHorizontal="12dp"
+        android:textSize="16sp"
+        android:layout_marginBottom="20dp" />
+
+    <!-- Hàng nút -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="end">
+
+        <!-- Nút Hủy -->
+        <Button
+            android:id="@+id/btnCancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Hủy"
+            android:textColor="@color/gray"
+            android:background="@android:color/transparent"
+            android:paddingHorizontal="12dp"
+            android:textSize="15sp" />
+
+        <!-- Nút Thêm nhóm có spinner bên trong -->
+        <LinearLayout
+            android:id="@+id/btnAdd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:background="@drawable/bg_primary_button"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="8dp"
+            android:minWidth="110dp"
+            android:layout_marginStart="16dp">
+
+            <ProgressBar
+                android:id="@+id/progressSpinnerCreate"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:visibility="gone"
+                android:indeterminate="true"
+                android:layout_marginEnd="8dp" />
+
+            <TextView
+                android:id="@+id/btnCreateGroup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Thêm nhóm"
+                android:textColor="@android:color/white"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>
