@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.example.midtermexercise.R;
 import com.example.midtermexercise.models.Group;
+import com.example.midtermexercise.models.GroupResponse;
 
 import java.util.HashMap;
 import java.util.List;
@@ -18,9 +19,9 @@ public class GroupExpandableAdapter extends BaseExpandableListAdapter {
 
     private Context context;
     private List<Group> groupList;
-    private HashMap<Group, List<String>> memberMap;
+    private HashMap<Group, List<GroupResponse.ContactItem>> memberMap;
 
-    public GroupExpandableAdapter(Context context, List<Group> groupList, HashMap<Group, List<String>> memberMap) {
+    public GroupExpandableAdapter(Context context, List<Group> groupList, HashMap<Group, List<GroupResponse.ContactItem>> memberMap) {
         this.context = context;
         this.groupList = groupList;
         this.memberMap = memberMap;
@@ -84,7 +85,11 @@ public class GroupExpandableAdapter extends BaseExpandableListAdapter {
             convertView = LayoutInflater.from(context).inflate(R.layout.item_group_child, parent, false);
 
         TextView tvMember = convertView.findViewById(R.id.tvMemberName);
-        tvMember.setText(memberMap.get(groupList.get(groupPosition)).get(childPosition));
+        TextView tvPhone = convertView.findViewById(R.id.tvMemberPhone);
+
+        GroupResponse.ContactItem contact = memberMap.get(groupList.get(groupPosition)).get(childPosition);
+        tvMember.setText(contact.fullName != null ? contact.fullName : "");
+        tvPhone.setText(contact.phone != null ? contact.phone : "");
 
         return convertView;
     }
@@ -94,7 +99,7 @@ public class GroupExpandableAdapter extends BaseExpandableListAdapter {
         return true;
     }
 
-    public void updateData(List<Group> newGroups, HashMap<Group, List<String>> newMap) {
+    public void updateData(List<Group> newGroups, HashMap<Group, List<GroupResponse.ContactItem>> newMap) {
         this.groupList = newGroups;
         this.memberMap = newMap;
         notifyDataSetChanged();

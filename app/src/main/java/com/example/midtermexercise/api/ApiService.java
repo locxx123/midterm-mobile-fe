@@ -6,6 +6,8 @@ import com.example.midtermexercise.models.User;
 import com.example.midtermexercise.models.FavoritesResponse;
 import com.example.midtermexercise.models.ContactResponse;
 import com.example.midtermexercise.models.DeleteContactResponse;
+import com.example.midtermexercise.models.GroupDeleteResponse;
+import com.example.midtermexercise.models.GroupAddResponse;
 
 import java.util.List;
 import java.util.Map;
@@ -41,11 +43,9 @@ public interface ApiService {
     @POST("phone/add")
     Call<User> addContact(@Body Map<String, String> body);
 
-    // Update Contact: PUT /phone/update/{id} -> ContactResponse { contact: User }
     @PUT("phone/update/{id}")
     Call<ContactResponse> updateContact(@Path("id") String id, @Body Map<String, String> body);
 
-    // Delete Contact: DELETE /phone/delete/{id} -> DeleteContactResponse { message, contactId, favorites[] }
     @DELETE("phone/delete/{id}")
     Call<DeleteContactResponse> deleteContact(@Path("id") String id);
 
@@ -54,4 +54,14 @@ public interface ApiService {
 
     @POST("phone/groups")
     Call<GroupResponse.SingleGroup> createGroup(@Body GroupRequest request);
+
+    @DELETE("phone/groups/{groupId}")
+    Call<GroupDeleteResponse> deleteGroup(@Path("groupId") String groupId);
+
+    @POST("phone/groups/{groupId}/add")
+    Call<GroupAddResponse> addContactToGroup(@Path("groupId") String groupId, @Body Map<String, String> body);
+
+    // Remove Contact from Group: POST /phone/groups/{groupId}/remove
+    @POST("phone/groups/{groupId}/remove")
+    Call<GroupAddResponse> removeContactFromGroup(@Path("groupId") String groupId, @Body Map<String, String> body);
 }
