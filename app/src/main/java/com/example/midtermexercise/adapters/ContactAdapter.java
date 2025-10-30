@@ -15,10 +15,19 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
 
     private List<User> userList;
     private OnItemClickListener listener;
+    private OnMoreClickListener moreClickListener;
 
     // Interface callback
     public interface OnItemClickListener {
         void onItemClick(User user);
+    }
+
+    public interface OnMoreClickListener {
+        void onMoreClick(View anchor, User user, int position);
+    }
+
+    public void setOnMoreClickListener(OnMoreClickListener listener) {
+        this.moreClickListener = listener;
     }
 
     public ContactAdapter(List<User> userList, OnItemClickListener listener) {
@@ -41,9 +50,16 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
         holder.tvPhone.setText(user.getPhone());
         holder.imgMore.setImageResource(R.drawable.ic_more);
 
-        // Gán sự kiện click
+        // Click vào item -> xem chi tiết
         holder.itemView.setOnClickListener(v -> {
             if (listener != null) listener.onItemClick(user);
+        });
+
+        // Click 3 chấm -> show menu
+        holder.imgMore.setOnClickListener(v -> {
+            if (moreClickListener != null) {
+                moreClickListener.onMoreClick(v, user, holder.getAdapterPosition());
+            }
         });
     }
 
@@ -58,7 +74,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            imgAvatar = itemView.findViewById(R.id.imgAvatar);
+            imgAvatar = itemView.findViewById(R.id.imgContact); // khớp id layout
             tvName = itemView.findViewById(R.id.tvName);
             tvPhone = itemView.findViewById(R.id.tvPhone);
             imgMore = itemView.findViewById(R.id.btnMore);

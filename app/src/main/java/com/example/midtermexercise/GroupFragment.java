@@ -26,7 +26,6 @@ import com.example.midtermexercise.api.RetrofitClient;
 import com.example.midtermexercise.models.Group;
 import com.example.midtermexercise.models.GroupRequest;
 import com.example.midtermexercise.models.GroupResponse;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -47,7 +46,6 @@ public class GroupFragment extends Fragment {
     private ImageButton btnClearSearchGroup;
     private TextView tvGroupCount;
     private LinearLayout llEmptyGroupState;
-    private FloatingActionButton fabAddGroup;
     private ProgressBar progressBar;
 
     @Nullable
@@ -62,8 +60,8 @@ public class GroupFragment extends Fragment {
         btnClearSearchGroup = view.findViewById(R.id.btnClearSearchGroup);
         tvGroupCount = view.findViewById(R.id.tvGroupCount);
         llEmptyGroupState = view.findViewById(R.id.llEmptyGroupState);
-        fabAddGroup = view.findViewById(R.id.fabAddGroup);
         progressBar = view.findViewById(R.id.progressBarGroups);
+        ImageButton btnAddGroup = view.findViewById(R.id.btnAddGroup);
 
         adapter = new GroupExpandableAdapter(requireContext(), groupList, memberMap);
         expandableListView.setAdapter(adapter);
@@ -84,7 +82,9 @@ public class GroupFragment extends Fragment {
             btnClearSearchGroup.setVisibility(View.GONE);
         });
 
-        fabAddGroup.setOnClickListener(v -> showCreateGroupDialog());
+        if (btnAddGroup != null) {
+            btnAddGroup.setOnClickListener(v -> showCreateGroupDialog());
+        }
 
         return view;
     }

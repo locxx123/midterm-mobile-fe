@@ -5,6 +5,7 @@ import com.example.midtermexercise.models.GroupResponse;
 import com.example.midtermexercise.models.User;
 import com.example.midtermexercise.models.FavoritesResponse;
 import com.example.midtermexercise.models.ContactResponse;
+import com.example.midtermexercise.models.DeleteContactResponse;
 
 import java.util.List;
 import java.util.Map;
@@ -14,6 +15,7 @@ import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.DELETE;
+import retrofit2.http.PUT;
 import retrofit2.http.Path;
 
 public interface ApiService {
@@ -39,11 +41,17 @@ public interface ApiService {
     @POST("phone/add")
     Call<User> addContact(@Body Map<String, String> body);
 
+    // Update Contact: PUT /phone/update/{id} -> ContactResponse { contact: User }
+    @PUT("phone/update/{id}")
+    Call<ContactResponse> updateContact(@Path("id") String id, @Body Map<String, String> body);
+
+    // Delete Contact: DELETE /phone/delete/{id} -> DeleteContactResponse { message, contactId, favorites[] }
+    @DELETE("phone/delete/{id}")
+    Call<DeleteContactResponse> deleteContact(@Path("id") String id);
+
     @GET("phone/groups")
     Call<GroupResponse> getGroups();
 
-
     @POST("phone/groups")
     Call<GroupResponse.SingleGroup> createGroup(@Body GroupRequest request);
-
 }
